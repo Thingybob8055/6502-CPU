@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 bus::bus() {
-    uint8_t memory[RAM_SIZE] = {0}; //initialise memory to 0
+    memory[RAM_SIZE] = {0}; //initialise memory to 0
 }
 
 bus::~bus() {
