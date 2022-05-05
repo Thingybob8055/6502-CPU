@@ -47,7 +47,7 @@ private:
     void cpu_bus_write(uint16_t address, uint8_t value);
     
     //flag setters and getters
-    uint8_t set_flag(cpu_flags flags);
+    uint8_t get_flag(cpu_flags flags);
 	void set_flag(cpu_flags flags, bool v);
 
     // The read location of data can come from two sources, a memory address, or
@@ -63,6 +63,7 @@ private:
 	uint8_t  cycles = 0; // Counts how many cycles the instruction has remaining
 	uint32_t clock_count = 0; // A global accumulation of the number of clocks
 
+    //added the X at the end to avoid name clash with function names
     typedef enum {
         IMPX,
         IMMX,
@@ -144,6 +145,10 @@ private:
         address_mode addr_mode;
         uint8_t cycles;
     } Instruction;
+
+    Instruction *curr_inst;
+    Instruction instructions[0x100];
+    Instruction *instruction_by_opcode(uint8_t opcode);
 
 private:
     //addessing modes

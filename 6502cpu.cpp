@@ -268,6 +268,123 @@ cpu::cpu() {
 cpu::~cpu() {
 }
 
+void cpu::cpu_clock() {
+    
+    if(cycles == 0) {
+        opcode = cpu_bus_read(pc);
+        pc++;
+        curr_inst = instruction_by_opcode(opcode);
+        set_flag(Unused, true);
+        uint8_t addition_cycle1 = 0x00;
+        uint8_t addition_cycle2 = 0x00;
+
+        switch (curr_inst->addr_mode) {
+            case IMPX:
+                addition_cycle1	= IMP();
+            break;
+            case IMMX:
+                addition_cycle1	= IMM();
+            break;
+            case ZP0X:
+                addition_cycle1	= ZP0();
+            break;
+            case ZPXX:
+                addition_cycle1	= ZPX();
+            break;
+            case ZPYX:
+                addition_cycle1	= ZPY();
+            break;
+            case RELX:
+                addition_cycle1	= REL();
+            break;
+            case ABSX:
+                addition_cycle1	= ABS();
+            break;
+            case ABXX:
+                addition_cycle1	= ABX();
+            break;
+            case ABYX:
+                addition_cycle1	= ABY();
+            break;
+            case INDX:
+                addition_cycle1	= IND();
+            break;
+            case IZXX:
+                addition_cycle1	= IZX();
+            break;
+            case IZYX:
+                addition_cycle1	= IZY();
+            break;
+            default:
+                printf("Unknown Addressing Mode");
+                exit(-7);
+            break;
+        }
+
+
+    }
+    
+
+
+}
+
+uint8_t cpu::IMP() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::IMM() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ZP0() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ZPX() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ZPY() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::REL() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ABS() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ABX() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ABY() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::IND() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::IZX() {
+    return 0;
+    //TODO:
+}
+uint8_t cpu::IZY() {
+    return 0;
+    //TODO:
+}
+
+void cpu::set_flag(cpu_flags flags, bool v) {
+    //TODO:
+}
+
+cpu::Instruction *cpu::instruction_by_opcode(uint8_t opcode) {
+    return &instructions[opcode];
+}
+
 uint8_t cpu::cpu_bus_read(uint16_t address) {
     if (address >= 0x0000 && address <= 0xFFFF) {
         return cpu_bus.bus_read(address);
