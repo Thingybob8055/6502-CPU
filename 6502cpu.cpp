@@ -275,7 +275,8 @@ void cpu::cpu_clock() {
         pc++;
         curr_inst = instruction_by_opcode(opcode);
         set_flag(Unused, true);
-        uint8_t addition_cycle1 = 0x00;
+        cycles = curr_inst->cycles;
+        uint8_t addition_cycle1 = 0x00; //instruction/address mode can impact a cpu cycle
         uint8_t addition_cycle2 = 0x00;
 
         switch (curr_inst->addr_mode) {
@@ -321,18 +322,201 @@ void cpu::cpu_clock() {
             break;
         }
 
+        switch (curr_inst->instruction_type)
+        {
+            case ADCX:
+                addition_cycle2 = ADC();
+            break;
+            case ANDX:
+                addition_cycle2 = AND();
+            break;
+            case ASLX:
+                addition_cycle2 = ASL();
+            break;
+            case BCCX:
+                addition_cycle2 = BCC();
+            break;
+            case BCSX:
+                addition_cycle2 = BCS();
+            break;
+            case BEQX:
+                addition_cycle2 = BEQ();
+            break;
+            case BITX:
+                addition_cycle2 = BIT();
+            break;
+            case BMIX:
+                addition_cycle2 = BMI();
+            break;
+            case BNEX:
+                addition_cycle2 = BNE();
+            break;
+            case BPLX:
+                addition_cycle2 = BPL();
+            break;
+            case BRKX:
+                addition_cycle2 = BRK();
+            break;
+            case BVCX:
+                addition_cycle2 = BVC();
+            break;
+            case BVSX:
+                addition_cycle2 = BVS();
+            break;
+            case CLCX:
+                addition_cycle2 = CLC();
+            break;
+            case CLDX:
+                addition_cycle2 = CLD();
+            break;
+            case CLIX:
+                addition_cycle2 = CLI();
+            break;
+            case CLVX:
+                addition_cycle2 = CLV();
+            break;
+            case CMPX:
+                addition_cycle2 = CMP();
+            break;
+            case CPXX:
+                addition_cycle2 = CPX();
+            break;
+            case CPYX:
+                addition_cycle2 = CPY();
+            break;
+            case DECX:
+                addition_cycle2 = DEC();
+            break;
+            case DEXX:
+                addition_cycle2 = DEX();
+            break;
+            case DEYX:
+                addition_cycle2 = DEY();
+            break;
+            case EORX:
+                addition_cycle2 = EOR();
+            break;
+            case INCX:
+                addition_cycle2 = INC();
+            break;
+            case INXX:
+                addition_cycle2 = INX();
+            break;
+            case INYX:
+                addition_cycle2 = INY();
+            break;
+            case JMPX:
+                addition_cycle2 = JMP();
+            break;
+            case JSRX:
+                addition_cycle2 = JSR();
+            break;
+            case LDAX:
+                addition_cycle2 = LDA();
+            break;
+            case LDXX:
+                addition_cycle2 = LDX();
+            break;
+            case LDYX:
+                addition_cycle2 = LDY();
+            break;
+            case LSRX:
+                addition_cycle2 = LSR();
+            break;
+            case NOPX:
+                addition_cycle2 = NOP();
+            break;
+            case ORAX:
+                addition_cycle2 = ORA();
+            break;
+            case PHAX:
+                addition_cycle2 = PHA();
+            break;
+            case PHPX:
+                addition_cycle2 = PHP();
+            break;
+            case PLAX:
+                addition_cycle2 = PLA();
+            break;
+            case PLPX:
+                addition_cycle2 = PLP();
+            break;
+            case ROLX:
+                addition_cycle2 = ROL();
+            break;
+            case RORX:
+                addition_cycle2 = ROR();
+            break;
+            case RTIX:
+                addition_cycle2 = RTI();
+            break;
+            case RTSX:
+                addition_cycle2 = RTS();
+            break;
+            case SBCX:
+                addition_cycle2 = SBC();
+            break;
+            case SECX:
+                addition_cycle2 = SEC();
+            break;
+            case SEDX:
+                addition_cycle2 = SED();
+            break;
+            case SEIX:
+                addition_cycle2 = SEI();
+            break;
+            case STAX:
+                addition_cycle2 = STA();
+            break;
+            case STXX:
+                addition_cycle2 = STX();
+            break;
+            case STYX:
+                addition_cycle2 = STY();
+            break;
+            case TAXX:
+                addition_cycle2 = TAX();
+            break;
+            case TAYX:
+                addition_cycle2 = TAY();
+            break;
+            case TSXX:
+                addition_cycle2 = TSX();
+            break;
+            case TXAX:
+                addition_cycle2 = TXA();
+            break;
+            case TXSX:
+                addition_cycle2 = TXS();
+            break;
+            case TYAX:
+                addition_cycle2 = TYA();
+            break;
+            case XXXX:
+                addition_cycle2 = NONE();
+            break;
+            default:
+                printf("Unknown Instruction: %s\n", curr_inst->name.c_str());
+                exit(-7);
+            break;
+        }
+        cycles += (addition_cycle1 & addition_cycle2);
+        set_flag(Unused, true);
 
     }
-    
-
+    cycles--;
 
 }
 
+//--------------------------------ADDRESSING MODES----------------------------------//
 uint8_t cpu::IMP() {
+    //no additional data required
+    //set the fetched value to value from the accumulator
+    fetched = accu;
     return 0;
-    //TODO:
 }
 uint8_t cpu::IMM() {
+    addr_abs = pc++;
     return 0;
     //TODO:
 }
@@ -377,10 +561,251 @@ uint8_t cpu::IZY() {
     //TODO:
 }
 
-void cpu::set_flag(cpu_flags flags, bool v) {
+//------------------------------INSTRUCTIONS-------------------------------//
+uint8_t cpu::ADC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::AND(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ASL(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BCC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BCS(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BEQ(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BIT(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BMI(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BNE(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BPL(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BRK(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BVC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::BVS(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CLC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CLD(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CLI(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CLV(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CMP(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CPX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::CPY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::DEC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::DEX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::DEY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::EOR(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::INC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::INX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::INY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::JMP(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::JSR(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::LDA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::LDX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::LDY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::LSR(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::NOP(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ORA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::PHA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::PHP(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::PLA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::PLP(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ROL(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::ROR(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::RTI(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::RTS(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::SBC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::SEC(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::SED(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::SEI(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::STA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::STX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::STY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TAX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TAY(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TSX(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TXA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TXS(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::TYA(){
+    return 0;
+    //TODO:
+}
+uint8_t cpu::NONE(){
+    return 0;
     //TODO:
 }
 
+void cpu::set_flag(cpu_flags flags, bool v) {
+    if (v) {
+        status = status | flags;
+    }
+    else {
+        status = status & ~flags;
+    }
+}
+
+uint8_t cpu::get_flag(cpu_flags flags) {
+    //returns the specific bit needed from the status register based on the cpu flag
+    return ((status & flags) > 0) ? 1 : 0;
+}
+
+//returns the instruction from the table via the opcode
 cpu::Instruction *cpu::instruction_by_opcode(uint8_t opcode) {
     return &instructions[opcode];
 }
