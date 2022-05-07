@@ -56,7 +56,7 @@ public:
 		DrawString(x , y + 20, "A: $" +  hex(nes.nes_cpu.accu, 2) + "  [" + std::to_string(nes.nes_cpu.accu) + "]");
 		DrawString(x , y + 30, "X: $" +  hex(nes.nes_cpu.x_reg, 2) + "  [" + std::to_string(nes.nes_cpu.x_reg) + "]");
 		DrawString(x , y + 40, "Y: $" +  hex(nes.nes_cpu.y_reg, 2) + "  [" + std::to_string(nes.nes_cpu.y_reg) + "]");
-		DrawString(x , y + 50, "Stack P: $" + hex(nes.nes_cpu.sp, 4));
+		DrawString(x , y + 50, "SP: $" + hex(nes.nes_cpu.sp, 4));
 	}
 
 	bool OnUserCreate()
