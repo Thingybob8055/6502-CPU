@@ -1,1 +1,1 @@
-# 6502-CPU
+# 6502 CPU Emulator
