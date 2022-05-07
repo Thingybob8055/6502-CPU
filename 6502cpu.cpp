@@ -1,11 +1,16 @@
 #include "bus.h"
 #include "6502cpu.h"
-
-bus cpu_bus; //bus instance in cpu to map functions
+#include <iostream>
+#include "instructions.h"
 
 cpu::cpu() {
-    //opcode table
-    Instruction instructions[0x100] = {
+}
+
+cpu::~cpu(){
+}
+
+//opcode table
+Instruction instructions[256] = {
         { "BRK", BRKX, IMMX, 7 },
         { "ORA", ORAX, IZXX, 6 },
         { "???", XXXX, IMPX, 2 },
@@ -263,67 +268,145 @@ cpu::cpu() {
         { "INC", INCX, ABXX, 7 },
         { "???", XXXX, IMPX, 7 }
     };
+
+//returns the instruction from the table via the opcode
+Instruction instruction_by_opcode(uint8_t code) {
+    return instructions[code];
 }
 
-cpu::~cpu() {
-}
-
+//when called, resets the CPU to a known state as defined below
 void cpu::reset() {
-    //TODO
+    addr_abs = 0xFFFC; //address to set pc to
+	uint16_t lo = cpu_bus_read(addr_abs + 0);
+	uint16_t hi = cpu_bus_read(addr_abs + 1);
+
+	// Set it
+	pc = (hi << 8) | lo;
+
+	// Reset internal registers
+	accu = 0;
+	x_reg = 0;
+	y_reg = 0;
+	sp = 0xFD;
+	status = 0x00 | Unused;
+
+	// Clear internal helper variables
+	addr_rel = 0x0000;
+	addr_abs = 0x0000;
+	fetched = 0x00;
+
+	// Reset takes time
+	cycles = 8;
 }
 void cpu::interrupt_request() {
-    //TODO
+    // If interrupts are allowed
+	if (get_flag(Disable_Interrupts) == 0)
+	{
+		// Push the program counter to the stack. It's 16-bits dont
+		// forget so that takes two pushes
+		cpu_bus_write(0x0100 + sp, (pc >> 8) & 0x00FF);
+		sp--;
+		cpu_bus_write(0x0100 + sp, pc & 0x00FF);
+		sp--;
+
+		// Then Push the status register to the stack
+		set_flag(Break, 0);
+		set_flag(Unused, 1);
+		set_flag(Disable_Interrupts, 1);
+		cpu_bus_write(0x0100 + sp, status);
+		sp--;
+
+		// Read new program counter location from fixed address
+		addr_abs = 0xFFFE;
+		uint16_t lo = cpu_bus_read(addr_abs + 0);
+		uint16_t hi = cpu_bus_read(addr_abs + 1);
+		pc = (hi << 8) | lo;
+
+		// IRQs take time
+		cycles = 7;
+	}
 }
 void cpu::non_mask_interrupt() {
-    //TODO
+    cpu_bus_write(0x0100 + sp, (pc >> 8) & 0x00FF);
+	sp--;
+	cpu_bus_write(0x0100 + sp, pc & 0x00FF);
+	sp--;
+
+	set_flag(Break, 0);
+	set_flag(Unused, 1);
+	set_flag(Disable_Interrupts, 1);
+	cpu_bus_write(0x0100 + sp, status);
+	sp--;
+
+	addr_abs = 0xFFFA;
+	uint16_t lo = cpu_bus_read(addr_abs + 0);
+	uint16_t hi = cpu_bus_read(addr_abs + 1);
+	pc = (hi << 8) | lo;
+
+	cycles = 8;
 }
 
 void cpu::cpu_clock() {
     
     if(cycles == 0) {
         opcode = cpu_bus_read(pc);
+        //printf("opcode: %0X\n", opcode);
         pc++;
         curr_inst = instruction_by_opcode(opcode);
         set_flag(Unused, true);
-        cycles = curr_inst->cycles;
+        cycles = curr_inst.cycles;
+        //printf("Name: %s\n", curr_inst.name.c_str());
+        //printf("Cycles: %d\n\n", curr_inst.cycles);
         uint8_t addition_cycle1 = 0x00; //instruction/address mode can impact a cpu cycle
         uint8_t addition_cycle2 = 0x00;
 
-        switch (curr_inst->addr_mode) {
+        switch (curr_inst.addr_mode) {
             case IMPX:
+                printf("called ad1\n");
                 addition_cycle1	= IMP();
             break;
             case IMMX:
+                printf("called ad2\n");
                 addition_cycle1	= IMM();
             break;
             case ZP0X:
+                printf("called ad3\n");
                 addition_cycle1	= ZP0();
             break;
             case ZPXX:
+                printf("called ad4\n");
                 addition_cycle1	= ZPX();
             break;
             case ZPYX:
+                printf("called ad5\n");
                 addition_cycle1	= ZPY();
             break;
             case RELX:
+                printf("called ad6\n");
                 addition_cycle1	= REL();
             break;
             case ABSX:
+                printf("called ad7\n");
                 addition_cycle1	= ABS();
             break;
             case ABXX:
+                printf("called ad8\n");
                 addition_cycle1	= ABX();
             break;
             case ABYX:
+                printf("called ad9\n");
                 addition_cycle1	= ABY();
             break;
             case INDX:
+                printf("called ad10\n");
                 addition_cycle1	= IND();
             break;
             case IZXX:
+                printf("called ad11\n");
                 addition_cycle1	= IZX();
             break;
             case IZYX:
+                printf("called ad12\n");
                 addition_cycle1	= IZY();
             break;
             default:
@@ -332,188 +415,244 @@ void cpu::cpu_clock() {
             break;
         }
 
-        switch (curr_inst->instruction_type)
+        switch (curr_inst.instruction_type)
         {
             case ADCX:
+                printf("called 1\n");
                 addition_cycle2 = ADC();
             break;
             case ANDX:
+                printf("called 2\n");
                 addition_cycle2 = AND();
             break;
             case ASLX:
+                printf("called 3\n");
                 addition_cycle2 = ASL();
             break;
             case BCCX:
+                printf("called 4\n");
                 addition_cycle2 = BCC();
             break;
             case BCSX:
+                printf("called 5\n");
                 addition_cycle2 = BCS();
             break;
             case BEQX:
+                printf("called 6\n");
                 addition_cycle2 = BEQ();
             break;
             case BITX:
+                printf("called 7\n");
                 addition_cycle2 = BIT();
             break;
             case BMIX:
+                printf("called 8\n");
                 addition_cycle2 = BMI();
             break;
             case BNEX:
+                printf("called 9\n");
                 addition_cycle2 = BNE();
             break;
             case BPLX:
+                printf("called 10\n");
                 addition_cycle2 = BPL();
             break;
             case BRKX:
+                printf("called 11\n");
                 addition_cycle2 = BRK();
             break;
             case BVCX:
+                printf("called 12\n");
                 addition_cycle2 = BVC();
             break;
             case BVSX:
+                printf("called 13\n");
                 addition_cycle2 = BVS();
             break;
             case CLCX:
+                printf("called 14\n");
                 addition_cycle2 = CLC();
             break;
             case CLDX:
+                printf("called 15\n");
                 addition_cycle2 = CLD();
             break;
             case CLIX:
                 addition_cycle2 = CLI();
             break;
             case CLVX:
+                printf("called 17\n");
                 addition_cycle2 = CLV();
             break;
             case CMPX:
+                printf("called 18\n");
                 addition_cycle2 = CMP();
             break;
             case CPXX:
+                printf("called 19\n");
                 addition_cycle2 = CPX();
             break;
             case CPYX:
+                printf("called 20\n");
                 addition_cycle2 = CPY();
             break;
             case DECX:
+                printf("called 21\n");
                 addition_cycle2 = DEC();
             break;
             case DEXX:
+                printf("called 22\n");
                 addition_cycle2 = DEX();
             break;
             case DEYX:
+                printf("called 23\n");
                 addition_cycle2 = DEY();
             break;
             case EORX:
+                printf("called 24\n");
                 addition_cycle2 = EOR();
             break;
             case INCX:
+                printf("called 25\n");
                 addition_cycle2 = INC();
             break;
             case INXX:
+                printf("called 26\n");
                 addition_cycle2 = INX();
             break;
             case INYX:
+                printf("called 27\n");
                 addition_cycle2 = INY();
             break;
             case JMPX:
+                printf("called 28\n");
                 addition_cycle2 = JMP();
             break;
             case JSRX:
+                printf("called 29\n");
                 addition_cycle2 = JSR();
             break;
             case LDAX:
+                printf("called 30\n");
                 addition_cycle2 = LDA();
             break;
             case LDXX:
+                printf("called 31\n");
                 addition_cycle2 = LDX();
             break;
             case LDYX:
+                printf("called 32\n");
                 addition_cycle2 = LDY();
             break;
             case LSRX:
+                printf("called 33\n");
                 addition_cycle2 = LSR();
             break;
             case NOPX:
+                printf("called 34\n");
                 addition_cycle2 = NOP();
             break;
             case ORAX:
+                printf("called 35\n");
                 addition_cycle2 = ORA();
             break;
             case PHAX:
+                printf("called 36\n");
                 addition_cycle2 = PHA();
             break;
             case PHPX:
+                printf("called 37\n");
                 addition_cycle2 = PHP();
             break;
             case PLAX:
+                printf("called 38\n");
                 addition_cycle2 = PLA();
             break;
             case PLPX:
+                printf("called 39\n");
                 addition_cycle2 = PLP();
             break;
             case ROLX:
+                printf("called 40\n");
                 addition_cycle2 = ROL();
             break;
             case RORX:
+                printf("called 41\n");
                 addition_cycle2 = ROR();
             break;
             case RTIX:
+                printf("called 42\n");
                 addition_cycle2 = RTI();
             break;
             case RTSX:
+                printf("called 43\n");
                 addition_cycle2 = RTS();
             break;
             case SBCX:
+                printf("called 44\n");
                 addition_cycle2 = SBC();
             break;
             case SECX:
+                printf("called 45\n");
                 addition_cycle2 = SEC();
             break;
             case SEDX:
+                printf("called 46\n");
                 addition_cycle2 = SED();
             break;
             case SEIX:
+                printf("called 47\n");
                 addition_cycle2 = SEI();
             break;
             case STAX:
+                printf("called 48\n");
                 addition_cycle2 = STA();
             break;
             case STXX:
+                printf("called 49\n");
                 addition_cycle2 = STX();
             break;
             case STYX:
+                printf("called 50\n");
                 addition_cycle2 = STY();
             break;
             case TAXX:
+                printf("called 51\n");
                 addition_cycle2 = TAX();
             break;
             case TAYX:
+                printf("called 52\n");
                 addition_cycle2 = TAY();
             break;
             case TSXX:
+                printf("called 53\n");
                 addition_cycle2 = TSX();
             break;
             case TXAX:
+                printf("called 54\n");
                 addition_cycle2 = TXA();
             break;
             case TXSX:
+                printf("called 55\n");
                 addition_cycle2 = TXS();
             break;
             case TYAX:
+                printf("called 56\n");
                 addition_cycle2 = TYA();
             break;
             case XXXX:
+                printf("called 57\n");
                 addition_cycle2 = NONE();
             break;
             default:
-                printf("Unknown Instruction: %s\n", curr_inst->name.c_str());
+                printf("Unknown Instruction: %s\n", curr_inst.name.c_str());
                 exit(-7);
             break;
         }
         cycles += (addition_cycle1 & addition_cycle2);
         set_flag(Unused, true);
-        clock_count++;
     }
+    clock_count++;
     cycles--;
 
 }
@@ -691,7 +830,7 @@ uint8_t cpu::ASL() {
 	set_flag(Carry, (temp & 0xFF00) > 0);
 	set_flag(Zero, (temp & 0x00FF) == 0x00);
 	set_flag(Negative, temp & 0x80);
-	if (curr_inst->addr_mode == IMPX)
+	if (curr_inst.addr_mode == IMPX)
 		accu = temp & 0x00FF;
 	else
 		cpu_bus_write(addr_abs, temp & 0x00FF);
@@ -940,25 +1079,53 @@ uint8_t cpu::JMP() {
     pc = addr_abs;
     return 0;
 }
-uint8_t cpu::JSR(){
+uint8_t cpu::JSR() {
+    //Jump To Sub-Routine
+    //Push current pc to stack, pc = address
+    pc--;
+	cpu_bus_write(0x0100 + sp, (pc >> 8) & 0x00FF);
+	sp--;
+	cpu_bus_write(0x0100 + sp, pc & 0x00FF);
+	sp--;
+	pc = addr_abs;
     return 0;
-    //TODO:
 }
-uint8_t cpu::LDA(){
-    return 0;
-    //TODO:
+uint8_t cpu::LDA() {
+    //load the accumulator
+    fetch();
+	accu = fetched;
+	set_flag(Zero, accu == 0x00);
+	set_flag(Negative, accu & 0x80);
+	return 1;
 }
-uint8_t cpu::LDX(){
-    return 0;
-    //TODO:
+uint8_t cpu::LDX() {
+    //load the x register
+    fetch();
+	x_reg = fetched;
+	set_flag(Zero, x_reg == 0x00);
+	set_flag(Negative, x_reg & 0x80);
+	return 1;
 }
-uint8_t cpu::LDY(){
-    return 0;
-    //TODO:
+uint8_t cpu::LDY() {
+    //load the y register
+    fetch();
+	y_reg = fetched;
+	set_flag(Zero, y_reg == 0x00);
+	set_flag(Negative, y_reg & 0x80);
+	return 1;
 }
-uint8_t cpu::LSR(){
-    return 0;
-    //TODO:
+uint8_t cpu::LSR() {
+    //logical bit shift right
+    fetch();
+	set_flag(Carry, fetched & 0x0001);
+	temp = fetched >> 1;	
+	set_flag(Zero, (temp & 0x00FF) == 0x0000);
+	set_flag(Negative, temp & 0x0080);
+	if (curr_inst.addr_mode == IMPX)
+		accu = temp & 0x00FF;
+	else
+		cpu_bus_write(addr_abs, temp & 0x00FF);
+	return 0;
 }
 uint8_t cpu::NOP() {
     // Sadly not all NOPs are equal, added a few here
@@ -1012,21 +1179,55 @@ uint8_t cpu::PLP() {
 	set_flag(Unused, 1);
 	return 0;
 }
-uint8_t cpu::ROL(){
-    return 0;
-    //TODO:
+uint8_t cpu::ROL() {
+    //rotate left
+    fetch();
+	temp = (uint16_t)(fetched << 1) | get_flag(Carry);
+	set_flag(Carry, temp & 0xFF00);
+	set_flag(Zero, (temp & 0x00FF) == 0x0000);
+	set_flag(Negative, temp & 0x0080);
+	if (curr_inst.addr_mode == IMPX)
+		accu = temp & 0x00FF;
+	else
+		cpu_bus_write(addr_abs, temp & 0x00FF);
+	return 0;
 }
-uint8_t cpu::ROR(){
-    return 0;
-    //TODO:
+uint8_t cpu::ROR() {
+    //rotate right
+    fetch();
+	temp = (uint16_t)(get_flag(Carry) << 7) | (fetched >> 1);
+	set_flag(Carry, fetched & 0x01);
+	set_flag(Zero, (temp & 0x00FF) == 0x00);
+	set_flag(Negative, temp & 0x0080);
+	if (curr_inst.addr_mode == IMPX)
+		accu = temp & 0x00FF;
+	else
+		cpu_bus_write(addr_abs, temp & 0x00FF);
+	return 0;
 }
-uint8_t cpu::RTI(){
-    return 0;
-    //TODO:
+uint8_t cpu::RTI() {
+    //return from Interrupt
+    //restores how things were before interrupts occured
+    //read the status register from stack, read previous pc and set it
+    sp++;
+	status = cpu_bus_read(0x0100 + sp);
+	status &= ~Break;
+	status &= ~Unused;
+
+	sp++;
+	pc = (uint16_t)cpu_bus_read(0x0100 + sp);
+	sp++;
+	pc |= (uint16_t)cpu_bus_read(0x0100 + sp) << 8;
+	return 0;
 }
-uint8_t cpu::RTS(){
-    return 0;
-    //TODO:
+uint8_t cpu::RTS() {
+    //return from sub routine
+    sp++;
+	pc = (uint16_t)cpu_bus_read(0x0100 + sp);
+	sp++;
+	pc |= (uint16_t)cpu_bus_read(0x0100 + sp) << 8;
+	pc++;
+	return 0;
 }
 uint8_t cpu::SBC() {
     fetch();
@@ -1060,41 +1261,60 @@ uint8_t cpu::SEI() {
     set_flag(Disable_Interrupts, true);
     return 0;
 }
-uint8_t cpu::STA(){
-    return 0;
-    //TODO:
+uint8_t cpu::STA() {
+    //store accumulator at address
+    cpu_bus_write(addr_abs, accu);
+	return 0;
 }
-uint8_t cpu::STX(){
-    return 0;
-    //TODO:
+uint8_t cpu::STX() {
+    //store x register at address
+    cpu_bus_write(addr_abs, x_reg);
+	return 0;
 }
-uint8_t cpu::STY(){
-    return 0;
-    //TODO:
+uint8_t cpu::STY() {
+    //store y register at address
+    cpu_bus_write(addr_abs, y_reg);
+	return 0;
 }
-uint8_t cpu::TAX(){
-    return 0;
-    //TODO:
+uint8_t cpu::TAX() {
+    //transfer accumulator to x register
+    x_reg = accu;
+	set_flag(Zero, x_reg == 0x00);
+	set_flag(Negative, x_reg & 0x80);
+	return 0;
 }
-uint8_t cpu::TAY(){
-    return 0;
-    //TODO:
+uint8_t cpu::TAY() {
+    //transfer accumulator to y register
+    y_reg = accu;
+	set_flag(Zero, y_reg == 0x00);
+	set_flag(Negative, y_reg & 0x80);
+	return 0;
 }
-uint8_t cpu::TSX(){
-    return 0;
-    //TODO:
+uint8_t cpu::TSX() {
+    //transfer stack pointer to x reg
+    x_reg = sp;
+	set_flag(Zero, x_reg == 0x00);
+	set_flag(Negative, x_reg & 0x80);
+	return 0;
 }
-uint8_t cpu::TXA(){
-    return 0;
-    //TODO:
+uint8_t cpu::TXA() {
+    //transfer x reg to accumulator
+    accu = x_reg;
+	set_flag(Zero, accu == 0x00);
+	set_flag(Negative, accu & 0x80);
+	return 0;
 }
-uint8_t cpu::TXS(){
-    return 0;
-    //TODO:
+uint8_t cpu::TXS() {
+    //transfer x reg to sp
+    sp = x_reg;
+	return 0;
 }
-uint8_t cpu::TYA(){
-    return 0;
-    //TODO:
+uint8_t cpu::TYA() {
+    //transfer y reg to accumulator
+    accu = y_reg;
+	set_flag(Zero, accu == 0x00);
+	set_flag(Negative, accu & 0x80);
+	return 0;
 }
 uint8_t cpu::NONE() {
     return 0;
@@ -1102,7 +1322,7 @@ uint8_t cpu::NONE() {
 
 uint8_t cpu::fetch()
 {
-	if (!(curr_inst->addr_mode == IMPX))
+	if (!(curr_inst.addr_mode == IMPX))
 		fetched = cpu_bus_read(addr_abs);
 	return fetched;
 }
@@ -1126,27 +1346,20 @@ uint8_t cpu::get_flag(cpu_flags flags) {
     return ((status & flags) > 0) ? 1 : 0;
 }
 
-//returns the instruction from the table via the opcode
-cpu::Instruction *cpu::instruction_by_opcode(uint8_t opcode) {
-    return &instructions[opcode];
-}
-
 uint8_t cpu::cpu_bus_read(uint16_t address) {
     if (address >= 0x0000 && address <= 0xFFFF) {
-        return cpu_bus.bus_read(address);
+        return c_bus->bus_read(address);
     }
     else {
         printf("Invalid address range");
-        exit(-1);
     }
 }
 
 void cpu::cpu_bus_write(uint16_t address, uint8_t value) {
     if (address >= 0x0000 && address <= 0xFFFF) {
-       cpu_bus.bus_write(address, value);
+       c_bus->bus_write(address, value);
     }
     else {
         printf("Invalid address range");
-        exit(-1);
     }
 }

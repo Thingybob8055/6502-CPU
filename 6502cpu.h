@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <map>
 
+class bus;
+
 class cpu {
 public:
 
@@ -34,11 +36,7 @@ public:
 	void cpu_clock();
 
     bool complete();
-
-    // Produces a map of strings, with keys equivalent to instruction start locations
-	// in memory, for the specified address range
-    //dissambler map from OLC NES.
-	std::map<uint16_t, std::string> disassemble(uint16_t nStart, uint16_t nStop);
+    void connect_bus(bus *n) { c_bus = n; }
 
     cpu();
     ~cpu();
@@ -49,6 +47,7 @@ private:
     //flag setters and getters
     uint8_t get_flag(cpu_flags flags);
 	void set_flag(cpu_flags flags, bool v);
+    bus *c_bus = nullptr;
 
     // The read location of data can come from two sources, a memory address, or
 	// its immediately available as part of the instruction. This function decides
@@ -62,93 +61,6 @@ private:
 	uint8_t  opcode = 0x00; // Is the instruction byte
 	uint8_t  cycles = 0; // Counts how many cycles the instruction has remaining
 	uint32_t clock_count = 0; // A global accumulation of the number of clocks
-
-    //added the X at the end to avoid name clash with function names
-    typedef enum {
-        IMPX,
-        IMMX,
-        ZP0X,
-        ZPXX,
-        ZPYX,
-        RELX,
-        ABSX,
-        ABXX,
-        ABYX,
-        INDX,
-        IZXX,
-        IZYX
-    } address_mode;
-    
-    typedef enum {
-        XXXX,
-        ADCX,
-        ANDX,
-        ASLX,
-        BCCX,
-        BCSX,
-        BEQX,
-        BITX,
-        BMIX,
-        BNEX,
-        BPLX,
-        BRKX,
-        BVCX,
-        BVSX,
-        CLCX,
-        CLDX,
-        CLIX,
-        CLVX,
-        CMPX,
-        CPXX,
-        CPYX,
-        DECX,
-        DEXX,
-        DEYX,
-        EORX,
-        INCX,
-        INXX,
-        INYX,
-        JMPX,
-        JSRX,
-        LDAX,
-        LDXX,
-        LDYX,
-        LSRX,
-        NOPX,
-        ORAX,
-        PHAX,
-        PHPX,
-        PLAX,
-        PLPX,
-        ROLX,
-        RORX,
-        RTIX,
-        RTSX,
-        SBCX,
-        SECX,
-        SEDX,
-        SEIX,
-        STAX,
-        STXX,
-        STYX,
-        TAXX,
-        TAYX,
-        TSXX,
-        TXAX,
-        TXSX,
-        TYAX
-    } in_type;
-
-    typedef struct {
-        std::string name;
-        in_type instruction_type;
-        address_mode addr_mode;
-        uint8_t cycles;
-    } Instruction;
-
-    Instruction *curr_inst;
-    Instruction instructions[0x100];
-    Instruction *instruction_by_opcode(uint8_t opcode);
 
 private:
     //addessing modes
