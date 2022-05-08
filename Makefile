@@ -1,3 +1,4 @@
+PLATFORM := $(shell uname)
 ifeq ($(OS),Windows_NT)
 6502CPU: 6502cpu.o bus.o main.o
 	g++ 6502cpu.o bus.o main.o -o 6502CPU -luser32 -lgdi32 -lopengl32 -lgdiplus -lShlwapi -ldwmapi -lstdc++fs -static -std=c++17
@@ -14,7 +15,7 @@ main.o: main.cpp
 
 clean:
 	del *.o
-else ifeq ($(UNAME_S),Linux)
+else ifeq ($(PLATFORM),Linux)
 6502CPU: 6502cpu.o bus.o main.o
 	g++ 6502cpu.o bus.o main.o -o 6502CPU -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 	make clean
