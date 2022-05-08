@@ -42,6 +42,18 @@ To run the program from Powershell:
 .\6502CPU.exe
 ```
 Or you can double click on the .exe file to open the program
+
+### MacOS
+
+To compile from the terminal, from the root directory, run:
+```bash
+make
+```
+To run the program:
+```bash
+./6502CPU
+```
+
 ## Libraries/Utilities used
 
 An amazing utility from One Lone Coder, the [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) was used to visualise the results of the emulation.
