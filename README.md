@@ -10,7 +10,7 @@ This project aims to emulate the 6502 implementation as seen on the Nintendo Ent
 
 <img src="..screenshots/../screenshots/demo.png" width="490">
 
-The above screenshot displays a visualisation of the status of the CPU registers, as well as the different pages and contents of the RAM, which includes the loaded program and the results of tne operations.
+The above screenshot displays a visualisation of the status of the CPU registers, as well as the different pages and contents of the RAM, which includes the loaded program and the results of the operations.
 
 ## Build Instructions
 
