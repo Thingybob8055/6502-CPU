@@ -16,7 +16,7 @@ The above screenshot displays a visualisation of the status of the CPU registers
 
 ### Linux
 
-To compile from the terminal, from the root directory, run:
+To compile from the terminal, from the project folder, run:
 ```bash
 make
 ```
@@ -29,7 +29,7 @@ To run the program:
 
 To install the compiler and make, follow the guide [here](https://code.visualstudio.com/docs/cpp/config-mingw)
 
-To compile from CMD/Powershell, from the root directory run:
+To compile from CMD/Powershell, from the project folder run:
 ```bash
 make
 ```
@@ -45,7 +45,7 @@ Or you can double click on the .exe file to open the program
 
 ### MacOS
 
-To compile from the terminal, from the root directory, run:
+To compile from the terminal, from the project folder, run:
 ```bash
 make
 ```
