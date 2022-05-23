@@ -415,8 +415,7 @@ void cpu::cpu_clock() {
             break;
         }
 
-        switch (curr_inst.instruction_type)
-        {
+        switch (curr_inst.instruction_type) {
             case ADCX:
                 printf("called 1\n");
                 addition_cycle2 = ADC();
@@ -864,8 +863,7 @@ uint8_t cpu::BCS() {
 }
 uint8_t cpu::BEQ() {
     //branch if equal
-    if (get_flag(Zero) == 1)
-	{
+    if (get_flag(Zero) == 1) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
@@ -886,8 +884,7 @@ uint8_t cpu::BIT() {
 }
 uint8_t cpu::BMI() {
     //branch if negative
-    if (get_flag(Negative) == 1)
-	{
+    if (get_flag(Negative) == 1) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
@@ -900,8 +897,7 @@ uint8_t cpu::BMI() {
 }
 uint8_t cpu::BNE() {
     //branch if not equal
-    if (get_flag(Zero) == 0)
-	{
+    if (get_flag(Zero) == 0) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
@@ -914,8 +910,7 @@ uint8_t cpu::BNE() {
 }
 uint8_t cpu::BPL() {
     //branch if positive
-    if (get_flag(Negative) == 0)
-	{
+    if (get_flag(Negative) == 0) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
@@ -946,8 +941,7 @@ uint8_t cpu::BRK() {
 }
 uint8_t cpu::BVC() {
     //branch if overflow clear
-    if (get_flag(Overflow) == 0)
-	{
+    if (get_flag(Overflow) == 0) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
@@ -960,8 +954,7 @@ uint8_t cpu::BVC() {
 }
 uint8_t cpu::BVS() {
     //branch if overflow set
-    if (get_flag(Overflow) == 1)
-	{
+    if (get_flag(Overflow) == 1) {
 		cycles++;
 		addr_abs = pc + addr_rel;
 
