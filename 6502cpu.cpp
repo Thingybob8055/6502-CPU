@@ -362,51 +362,51 @@ void cpu::cpu_clock() {
 
         switch (curr_inst.addr_mode) {
             case IMPX:
-                printf("called ad1\n");
+                printf("IMPLIED ADDR MODE\n");
                 addition_cycle1	= IMP();
             break;
             case IMMX:
-                printf("called ad2\n");
+                printf("IMMEDIATE ADDR MODE\n");
                 addition_cycle1	= IMM();
             break;
             case ZP0X:
-                printf("called ad3\n");
+                printf("ZERO PAGE\n");
                 addition_cycle1	= ZP0();
             break;
             case ZPXX:
-                printf("called ad4\n");
+                printf("ZERO PAGE X INDEX\n");
                 addition_cycle1	= ZPX();
             break;
             case ZPYX:
-                printf("called ad5\n");
+                printf("ZERO PAGE Y INDEX\n");
                 addition_cycle1	= ZPY();
             break;
             case RELX:
-                printf("called ad6\n");
+                printf("RELATIVE X ADDR MODE\n");
                 addition_cycle1	= REL();
             break;
             case ABSX:
-                printf("called ad7\n");
+                printf("ABSOLUTE ADDR MODE\n");
                 addition_cycle1	= ABS();
             break;
             case ABXX:
-                printf("called ad8\n");
+                printf("ABSOLUTE X INDEX ADDR MODE\n");
                 addition_cycle1	= ABX();
             break;
             case ABYX:
-                printf("called ad9\n");
+                printf("ABSOLUTE X INDEX ADDR MODE\n");
                 addition_cycle1	= ABY();
             break;
             case INDX:
-                printf("called ad10\n");
+                printf("INDIRECT ADDR MODE\n");
                 addition_cycle1	= IND();
             break;
             case IZXX:
-                printf("called ad11\n");
+                printf("INDIRECT X INDEXED ADDR MODE\n");
                 addition_cycle1	= IZX();
             break;
             case IZYX:
-                printf("called ad12\n");
+                printf("INDIRECT X INDEXED ADDR MODE\n");
                 addition_cycle1	= IZY();
             break;
             default:
