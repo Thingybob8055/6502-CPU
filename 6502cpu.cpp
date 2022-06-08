@@ -417,230 +417,231 @@ void cpu::cpu_clock() {
 
         switch (curr_inst.instruction_type) {
             case ADCX:
-                printf("called 1\n");
+                printf("ADDITION WITH CARRY INSTRUCTION\n");
                 addition_cycle2 = ADC();
             break;
             case ANDX:
-                printf("called 2\n");
+                printf("AND INSTRUCTION\n");
                 addition_cycle2 = AND();
             break;
             case ASLX:
-                printf("called 3\n");
+                printf("ARITHMETIC SHIFT LEFT INSTRUCTION\n");
                 addition_cycle2 = ASL();
             break;
             case BCCX:
-                printf("called 4\n");
+                printf("BRANCH IF CARRY CLEAR INSTRUCTION\n");
                 addition_cycle2 = BCC();
             break;
             case BCSX:
-                printf("called 5\n");
+                printf("BRANCH IF CARRY SET INSTRUCTION\n");
                 addition_cycle2 = BCS();
             break;
             case BEQX:
-                printf("called 6\n");
+                printf("BRANCH IF EQUAL INSTRUCTION\n");
                 addition_cycle2 = BEQ();
             break;
             case BITX:
-                printf("called 7\n");
+                printf("BIT INSTRUCTION\n");
                 addition_cycle2 = BIT();
             break;
             case BMIX:
-                printf("called 8\n");
+                printf("BRANCH IF NEGATIVE INSTRUCTION\n");
                 addition_cycle2 = BMI();
             break;
             case BNEX:
-                printf("called 9\n");
+                printf("BRANCH IF NOT EQUAL INSTRUCTION\n");
                 addition_cycle2 = BNE();
             break;
             case BPLX:
-                printf("called 10\n");
+                printf("RANCH IF EQUAL INSTRUCTION\n");
                 addition_cycle2 = BPL();
             break;
             case BRKX:
-                printf("called 11\n");
+                printf("BREAK INSTRUCTION\n");
                 addition_cycle2 = BRK();
             break;
             case BVCX:
-                printf("called 12\n");
+                printf("BRANCH IF OVERFLOW CLEAR INSTRUCTION\n");
                 addition_cycle2 = BVC();
             break;
             case BVSX:
-                printf("called 13\n");
+                printf("BRANCH IF OVERFLOW SET INSTRUCTION\n");
                 addition_cycle2 = BVS();
             break;
             case CLCX:
-                printf("called 14\n");
+                printf("CLEAR CARRY FLAG\n");
                 addition_cycle2 = CLC();
             break;
             case CLDX:
-                printf("called 15\n");
+                printf("CLEAR DECIMAL FLAG\n");
                 addition_cycle2 = CLD();
             break;
             case CLIX:
+                printf("CLEAR INTERRUPT FLAG\n");
                 addition_cycle2 = CLI();
             break;
             case CLVX:
-                printf("called 17\n");
+                printf("CLEAR OVERFLOW FLAG\n");
                 addition_cycle2 = CLV();
             break;
             case CMPX:
-                printf("called 18\n");
+                printf("COMPARE ACCUMULATOR\n");
                 addition_cycle2 = CMP();
             break;
             case CPXX:
-                printf("called 19\n");
+                printf("COMPARE X REGISTER\n");
                 addition_cycle2 = CPX();
             break;
             case CPYX:
-                printf("called 20\n");
+                printf("COMPARE Y REGISTER\n");
                 addition_cycle2 = CPY();
             break;
             case DECX:
-                printf("called 21\n");
+                printf("DECREMENT AT MEMORY LOCATION\n");
                 addition_cycle2 = DEC();
             break;
             case DEXX:
-                printf("called 22\n");
+                printf("DECREMENT X REGISTER\n");
                 addition_cycle2 = DEX();
             break;
             case DEYX:
-                printf("called 23\n");
+                printf("DECREMENT Y REGISTER\n");
                 addition_cycle2 = DEY();
             break;
             case EORX:
-                printf("called 24\n");
+                printf("XOR INSTRUCTION\n");
                 addition_cycle2 = EOR();
             break;
             case INCX:
-                printf("called 25\n");
+                printf("INCREMENT DATA AT MEMORY LOCATION\n");
                 addition_cycle2 = INC();
             break;
             case INXX:
-                printf("called 26\n");
+                printf("INCREMENT X REGISTER\n");
                 addition_cycle2 = INX();
             break;
             case INYX:
-                printf("called 27\n");
+                printf("INCREMENT Y REGISTER\n");
                 addition_cycle2 = INY();
             break;
             case JMPX:
-                printf("called 28\n");
+                printf("JUMP TO MEMORY LOCATION\n");
                 addition_cycle2 = JMP();
             break;
             case JSRX:
-                printf("called 29\n");
+                printf("JUMP TO SUB-ROUTINE\n");
                 addition_cycle2 = JSR();
             break;
             case LDAX:
-                printf("called 30\n");
+                printf("LOAD ACCUMULATOR\n");
                 addition_cycle2 = LDA();
             break;
             case LDXX:
-                printf("called 31\n");
+                printf("LOAD X REGISTER\n");
                 addition_cycle2 = LDX();
             break;
             case LDYX:
-                printf("called 32\n");
+                printf("LOAD Y REGISTER\n");
                 addition_cycle2 = LDY();
             break;
             case LSRX:
-                printf("called 33\n");
+                printf("LOGICAL BIT SHIFT RIGHT\n");
                 addition_cycle2 = LSR();
             break;
             case NOPX:
-                printf("called 34\n");
+                printf("NO OPERATION\n");
                 addition_cycle2 = NOP();
             break;
             case ORAX:
-                printf("called 35\n");
+                printf("LOGICAL OR INSTRUCTION\n");
                 addition_cycle2 = ORA();
             break;
             case PHAX:
-                printf("called 36\n");
+                printf("PUSH ACCUMULATOR TO STACK\n");
                 addition_cycle2 = PHA();
             break;
             case PHPX:
-                printf("called 37\n");
+                printf("PUSH STATUS REGISTER TO STACK\n");
                 addition_cycle2 = PHP();
             break;
             case PLAX:
-                printf("called 38\n");
+                printf("POP ACCUMULATOR OF THE STACK\n");
                 addition_cycle2 = PLA();
             break;
             case PLPX:
-                printf("called 39\n");
+                printf("POP STATUS REGISTER OF THE STACK\n");
                 addition_cycle2 = PLP();
             break;
             case ROLX:
-                printf("called 40\n");
+                printf("ROTOATE LEFT INSTRUCTION\n");
                 addition_cycle2 = ROL();
             break;
             case RORX:
-                printf("called 41\n");
+                printf("ROTATE RIGHT INSTRUCTION\n");
                 addition_cycle2 = ROR();
             break;
             case RTIX:
-                printf("called 42\n");
+                printf("RETURN FROM INTERRUPT\n");
                 addition_cycle2 = RTI();
             break;
             case RTSX:
-                printf("called 43\n");
+                printf("RETURN FROM SUB-ROUTINE\n");
                 addition_cycle2 = RTS();
             break;
             case SBCX:
-                printf("called 44\n");
+                printf("SUBTRACT WITH CARRY INSTRUCTION\n");
                 addition_cycle2 = SBC();
             break;
             case SECX:
-                printf("called 45\n");
+                printf("SET CARRY FLAG\n");
                 addition_cycle2 = SEC();
             break;
             case SEDX:
-                printf("called 46\n");
+                printf("SET DECIMAL FLAG\n");
                 addition_cycle2 = SED();
             break;
             case SEIX:
-                printf("called 47\n");
+                printf("SET INTERRUPT FLAG\n");
                 addition_cycle2 = SEI();
             break;
             case STAX:
-                printf("called 48\n");
+                printf("STORE ACCUMULATOR AT ADDRESS\n");
                 addition_cycle2 = STA();
             break;
             case STXX:
-                printf("called 49\n");
+                printf("STORE X REGISTER AT ADDRESS\n");
                 addition_cycle2 = STX();
             break;
             case STYX:
-                printf("called 50\n");
+                printf("STORE Y REGISTER AT ADDRESS\n");
                 addition_cycle2 = STY();
             break;
             case TAXX:
-                printf("called 51\n");
+                printf("TRANSFER ACCUMULATOR TO X REGISTER\n");
                 addition_cycle2 = TAX();
             break;
             case TAYX:
-                printf("called 52\n");
+                printf("TRANSFER ACCUMULATOR TO Y REGISTER\n");
                 addition_cycle2 = TAY();
             break;
             case TSXX:
-                printf("called 53\n");
+                printf("TRANSFER STACK POINTER TO X REGISTER\n");
                 addition_cycle2 = TSX();
             break;
             case TXAX:
-                printf("called 54\n");
+                printf("TRANSFER X REGISTER TO ACCUMULATOR\n");
                 addition_cycle2 = TXA();
             break;
             case TXSX:
-                printf("called 55\n");
+                printf("TRANSFER X REGISTER TO STACK POINTER\n");
                 addition_cycle2 = TXS();
             break;
             case TYAX:
-                printf("called 56\n");
+                printf("TRANSFER Y REGISTER TO ACCUMULATOR\n");
                 addition_cycle2 = TYA();
             break;
             case XXXX:
-                printf("called 57\n");
+                printf("NO OPERATION\n");
                 addition_cycle2 = NONE();
             break;
             default:
@@ -1031,6 +1032,7 @@ uint8_t cpu::DEX() {
     return 0;
 }
 uint8_t cpu::DEY() {
+    //decrement x register
     y_reg--;
 	set_flag(Zero, y_reg == 0x00);
 	set_flag(Negative, y_reg & 0x80);
@@ -1313,15 +1315,13 @@ uint8_t cpu::NONE() {
     return 0;
 }
 
-uint8_t cpu::fetch()
-{
+uint8_t cpu::fetch() {
 	if (!(curr_inst.addr_mode == IMPX))
 		fetched = cpu_bus_read(addr_abs);
 	return fetched;
 }
 
-bool cpu::complete()
-{
+bool cpu::complete() {
 	return cycles == 0;
 }
 
