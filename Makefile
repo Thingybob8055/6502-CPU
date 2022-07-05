@@ -32,6 +32,12 @@ main.o: main.cpp
 clean:
 	rm *.o
 else #MACOS
+UNAME_P := $(shell uname -p)
+ifeq ($(UNAME_P),x86_64)
 6502CPU: 6502cpu.cpp bus.cpp main.cpp
-	clang++ -arch x86_64 -std=c++17 -mmacosx-version-min=10.15 -framework OpenGL -framework GLUT -framework Carbon -lpng 6502cpu.cpp bus.cpp main.cpp -o 6502CPU
+	clang++ -arch x86_64 -std=c++17 -mmacosx-version-min=10.15 -framework OpenGL -framework GLUT -framework Carbon -lpng 6502cpu.cpp bus.cpp main.cpp -o 6502CPU  
+else
+6502CPU: 6502cpu.cpp bus.cpp main.cpp
+	clang++  -I/opt/homebrew/Cellar/libpng/1.6.37/include -L/opt/homebrew/Cellar/libpng/1.6.37/lib/  -std=c++17 -mmacosx-version-min=10.15 -framework OpenGL -framework GLUT -framework Carbon -lpng 6502cpu.cpp bus.cpp main.cpp -o 6502CPU
+endif
 endif

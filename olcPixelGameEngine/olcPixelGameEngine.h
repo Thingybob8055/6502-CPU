@@ -195,7 +195,7 @@
 
 	Author
 	~~~~~~
-	David Barr, aka javidx9, ©OneLoneCoder 2018, 2019, 2020, 2021, 2022
+	David Barr, aka javidx9, ï¿½OneLoneCoder 2018, 2019, 2020, 2021, 2022
 */
 #pragma endregion
 
@@ -5086,8 +5086,12 @@ namespace olc {
 		static void scrollWheelUpdate(id selff, SEL _sel, id theEvent) {
 			static const SEL deltaYSel = sel_registerName("deltaY");
 
-			double deltaY = ((double (*)(id, SEL))objc_msgSend_fpret)(theEvent, deltaYSel);
-
+			#ifdef _M_X86
+				double deltaY = ((double (*)(id, SEL))objc_msgSend_fpret)(theEvent, deltaYSel);
+			#else
+				double deltaY = 0.0;
+			#endif
+			
 			for (int i = 0; i < abs(deltaY); i++) {
 				if (deltaY > 0) {
 					ptrPGE->olc_UpdateMouseWheel(-1);
