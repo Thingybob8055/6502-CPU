@@ -45,6 +45,12 @@ Or you can double click on the .exe file to open the program
 
 ### MacOS
 
+libpng needs to be installed to compile. This can be installed via homebrew using:
+
+```bash
+brew install libpng
+```
+
 To compile from the terminal, from the project folder, run:
 ```bash
 make
